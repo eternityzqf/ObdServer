@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uoocent.car.daoO.ObdDeviceDao">
+	<resultMap type="com.uoocent.car.entity.Device" id="DeviceRM">
+		<result column="device_id" property="device" />
+		<result column="sim_icc" property="sim" />
+		<result column="vin" property="vin" />
+	</resultMap>
+	<!-- _____________________________________________________________________________ 全部字段 -->
+	<sql id="COLUMNS">
+		device_id,sim_icc,vin
+	</sql>
+
+	<!-- _____________________________________________________________________________ findByDevice -->
+
+	<select id="findByDevice" parameterType="java.lang.String" resultMap="DeviceRM">
+		select device_id,sim_icc,vin from `ho_device_version` where device_id = #{device} order by createdate desc limit 1
+	</select>
+	
+	<!-- _____________________________________________________________________________ add -->
+	<insert id="add" parameterType="map">
+		insert into yx_device (
+			<if test="device != null">device ,</if>
+			<if test="ip != null">ip ,</if>
+			<if test="port != null">port ,</if>
+			<if test="exchange != null ">exchange, </if>
+			<if test="extend_fuel != null ">extend_fuel, </if>
+			<if test="extend_trun != null ">extend_trun </if>
+		)
+		values (
+			<if test="device != null"> #{device},</if>
+			<if test="ip != null"> #{ip},</if>
+			<if test="port != null"> #{port},</if>
+			<if test="exchange != null"> #{exchange},</if>
+			<if test="extend_fuel != null"> #{extend_fuel},</if>
+			<if test="extend_trun != null"> #{extend_trun}</if>
+		)
+	</insert>
+	
+	<!-- _____________________________________________________________________________ update -->
+	<update id="update" parameterType="map">
+		update yx_device 
+		<set>
+			<if test="ip != null">ip = #{ip},</if>
+			<if test="port != null">port = #{port},</if>
+			<if test="exchange != null ">exchange = #{exchange},</if>
+			<if test="extend_fuel != null ">extend_fuel = #{extend_fuel},</if>
+			<if test="extend_trun != null ">extend_trun = #{extend_trun}</if>
+		</set>
+		where device = #{device}
+	</update>
+
+	<delete id="removeDevice" parameterType="String">
+		delete from yx_device where device = #{device}
+	</delete>
+	
+	<!-- _____________________________________________________________________________ countByDevice -->
+	<select id="countByDevice" parameterType="map" resultType="integer">
+		select COUNT(*) FROM `yx_device` where device = #{device}
+	</select>
+	
+	<!-- _____________________________________________________________________________ getDeviceSet -->
+	<select id="getDeviceSet" parameterType="String" resultType="java.util.HashMap">
+		select device,ip,`port`,exchange,extend_fuel,extend_trun,createdate FROM `yx_device` where device = #{device}
+	</select>
+	
+	<!-- _____________________________________________________________________________ getDeviceGpsInfo -->	
+	<select id="getDeviceGpsInfo" parameterType="String" resultType="java.util.HashMap">
+	    select device_id as device,latitude,longitude,sendDate as senddate
+	    from ho_car_info
+	    where
+	       device_id = #{device}
+        order by sendDate desc
+        limit 5
+	</select>
+	
+	<!-- _____________________________________________________________________________ getDeviceCarNoticeInfo -->	
+	<select id="getDeviceCarNoticeInfo" parameterType="String" resultType="java.util.HashMap">
+		select
+			device_id as device,
+			sendDate as senddate,
+			alm_id,
+			(case
+				when alm_id = '0001' then '点火报警'
+				when alm_id = '0002' then '熄火报警'
+				when alm_id = '0104' then '插入报警'
+				when alm_id = '0007' then '系统启动'
+			 end) as alm_description,
+			latitude,
+			longitude
+		from ho_car_notice
+		where alm_id in ('0001','0002','0104','0007')
+		  and device_id = #{device}
+		order by sendDate desc
+		limit 5;
+	</select>
+	
+	<!-- _____________________________________________________________________________ getDeviceVolHeightAndTrun -->	
+	<select id="getDeviceVolHeightAndTrun" parameterType="String" resultType="java.util.HashMap">
+	    select 
+	       terminalPhone as device,
+	       oilPercent as vol_height,
+				 (case
+					  when turn = '0' and turnDirection = '0' then '不转'
+					  when turn = '1' and turnDirection = '0' then '反转'
+					  when turn = '1' and turnDirection = '1' then '正转'
+				  end) as turn_text,
+				 (case
+					  when turn = '0' and turnDirection = '0' then '0'
+					  when turn = '1' and turnDirection = '0' then '1'
+					  when turn = '1' and turnDirection = '1' then '2'
+				  end) as turn_code
+	    from jt808_loaction 
+	    where terminalPhone = #{device} 
+	    order by createdate desc limit 1;
+	</select>
+</mapper>

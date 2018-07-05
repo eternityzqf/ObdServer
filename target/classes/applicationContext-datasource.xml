@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<!-- 扫描service、dao -->
+	<context:component-scan base-package="com.uoocent.car.service">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+    <context:component-scan base-package="com.uoocent.car.config"/>
+
+	<context:component-scan base-package="com.uoocent.car.util" />
+
+	<bean id="config" name="Config" class="com.uoocent.car.config.Config">
+		<property name="ip" value="192.168.1.134" />
+		<property name="exchange" value="YXCL" />
+		<property name="port" value="8888" />
+	</bean>
+
+	<bean id="fileUtils" name="FileUtils" class="com.uoocent.car.util.FileUtils">
+		<property name="ip" value="192.168.1.134" />
+		<property name="user" value="root" />
+		<property name="pwd" value="123456" />
+	</bean>
+    <!-- mysql数据源 -->
+	<bean id="dataSourceM" class="com.uoocent.car.util.EncryptionJDBC" init-method="init" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://192.168.1.134:3306/office_cars?useUnicode=true&amp;characterEncoding=utf8" />
+		<property name="username" value="root" />
+		<property name="password" value="C47437781BA2AE33E8A2C88BFAF7FB7D" />
+		
+		<property name="initialSize" value="5" />
+		<property name="maxActive" value="100" />
+		<property name="minIdle" value="10" />
+		<property name="maxWait" value="60000" />
+		
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="true" />
+		<property name="testWhileIdle" value="true" />
+		
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="1800" />
+		<property name="logAbandoned" value="true" />
+		<property name="filters" value="mergeStat" />
+	</bean>
+	
+	<!-- 配置sessionFactory加载sqlMapConfig.xml和映射文件 for mysql-->
+	<bean id="sqlSessionFactoryM" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceM" />
+		<property name="configLocation" value="classpath:sqlMapConfig.xml" />
+		<property name="mapperLocations" value="classpath:com/uoocent/car/mappingM/*.xml" />
+	</bean>
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 for mysql-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryM" />
+		<property name="basePackage" value="com.uoocent.car.daoM" />
+	</bean>
+
+	<!-- 事务管理 for mysql-->
+	<bean id="transactionManagerM" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceM" />
+		<qualifier value="isap" />
+	</bean>
+	
+	<!-- 全注解方式   需加上@Transactional -->  
+    <tx:annotation-driven transaction-manager="transactionManagerM" /> 
+
+	<!-- 事务管理 属性 -->
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManagerM">
+		<tx:attributes>
+			<!-- 定义所有get开头的方法都是只读的 -->
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="list*" read-only="true" />
+			<tx:method name="read*" read-only="true" />
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 配置切面 -->
+	<aop:config>
+		<aop:advisor advice-ref="transactionAdvice" order="2"
+			pointcut="execution(* com.uoocent.car.service..*.*(..))" />
+	</aop:config>
+	
+    <!-- mysql OBD数据源 -->
+	<bean id="dataSourceOBD" class="com.uoocent.car.util.EncryptionJDBC" init-method="init" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://192.168.1.134:3306/obd_server?useUnicode=true&amp;characterEncoding=utf8" />
+		<property name="username" value="root" />
+		<property name="password" value="C47437781BA2AE33E8A2C88BFAF7FB7D" />
+		
+		<property name="initialSize" value="5" />
+		<property name="maxActive" value="100" />
+		<property name="minIdle" value="10" />
+		<property name="maxWait" value="60000" />
+		
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="true" />
+		<property name="testWhileIdle" value="true" />
+		
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="1800" />
+		<property name="logAbandoned" value="true" />
+		<property name="filters" value="mergeStat" />
+	</bean>
+	
+	<!-- 配置sessionFactory加载sqlMapConfig.xml和映射文件 for mysql obd-->
+	<bean id="sqlSessionFactoryOBD" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceOBD" />
+		<property name="configLocation" value="classpath:sqlMapConfig.xml" />
+		<property name="mapperLocations" value="classpath:com/uoocent/car/mappingO/*.xml" />
+	</bean>
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 for mysql-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryOBD" />
+		<property name="basePackage" value="com.uoocent.car.daoO" />
+	</bean>
+
+	<!-- 事务管理 for mysql obd-->
+	<bean id="transactionManagerOBD" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceOBD" />
+		<qualifier value="isap" />
+	</bean>
+	
+	<!-- 全注解方式   需加上@Transactional -->  
+    <tx:annotation-driven transaction-manager="transactionManagerOBD" />
+    
+</beans>

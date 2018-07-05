@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uoocent.car.daoM.CarNoticeDao">
+	<resultMap type="com.uoocent.car.entity.CarNotice" id="CarNoticeRM">
+		<result column="device" property="device" />
+		<result column="senddate" property="senddate" />
+		<result column="alm_id" property="alm_id" />
+		<result column="alm_description" property="alm_description" />
+		<result column="latitude" property="latitude" />		
+		<result column="longitude" property="longitude" />
+	</resultMap>
+	<!-- _____________________________________________________________________________ 全部字段 -->
+	<sql id="COLUMNS">
+		device,senddate,alm_id,latitude,longitude
+	</sql>
+	
+	<!-- _____________________________________________________________________________ listByDevice -->
+	<select id="listByDevice" parameterType="java.lang.String" resultMap="CarNoticeRM">
+		select
+			device,
+			senddate,
+			alm_id,
+			(case
+				when alm_id = '0001' then '点火报警'
+				when alm_id = '0002' then '熄火报警'
+				when alm_id = '0104' then '插入报警'
+				when alm_id = '0007' then '系统启动'
+			 end) as alm_description,
+			latitude,
+			longitude
+		from `yx_car_notice`
+		where alm_id in ('0001','0002','0104','0007')
+		  and device = #{device}
+		order by createdate desc
+		limit 5
+	</select>
+	<!-- _____________________________________________________________________________  listFuelByDevice -->
+	<select id="listFuelByDevice"  parameterType="String" resultType="java.util.HashMap">
+	   select 
+	       fuel_high,
+	       DATE_FORMAT(senddate,'%Y-%m-%d %H:%i:%s') as senddate
+	   from yx_car_fuel_current 
+	   where device = #{device}
+	</select>
+	
+	<!-- _____________________________________________________________________________  listTurnByDevice -->
+	<select id="listTurnByDevice"  parameterType="String" resultType="java.util.HashMap">
+		select 
+			is_run,
+	        is_turn,
+			DATE_FORMAT(senddate,'%Y-%m-%d %H:%i:%s') as senddate
+	    from yx_car_turn_current 
+	    where device = #{device}
+	</select>
+</mapper>

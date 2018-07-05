@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uoocent.car.daoM.DeviceDao">
+	<resultMap type="com.uoocent.car.entity.Device" id="DeviceRM">
+		<id column="id" property="id" />
+		<result column="car_no" property="car_no" />
+		<result column="device" property="device" />
+		<result column="device_type" property="device_type" />
+		<result column="video_device" property="video_device" />
+		<result column="video_sim" property="video_sim" />
+		<result column="sim" property="sim" />
+		<result column="connectway" property="connectway" />	
+		<result column="status" property="status" />
+		<result column="car_id" property="car_id" />
+		<result column="createdby" property="createdby" />
+		<result column="createdate" property="createdate" />
+		<result column="updatedate" property="updatedate" />
+	</resultMap>
+	<!-- _____________________________________________________________________________ 全部字段 -->
+	<sql id="COLUMNS">
+		id,car_no,device,device_type,video_device,video_sim,sim,connectway,status,car_id,createdby,createdate,updatedate
+	</sql>
+	
+	<!-- _____________________________________________________________________________ add -->
+	<insert id="add" parameterType="com.uoocent.car.entity.Device">
+		insert into yx_device (
+			<if test="car_no != null and car_no != ''">car_no ,</if>
+			<if test="device != null and device != ''">device ,</if>
+			<if test="device_type != null and device_type != ''">device_type ,</if>
+			<if test="video_device != null and video_device != ''">video_device ,</if>
+			<if test="video_sim != null and video_sim != ''">video_sim ,</if>
+			<if test="sim != null and sim != ''">sim ,</if>
+			<if test="connectway != null and connectway !=''">connectway ,</if>
+			<if test="status != null and status != ''">status ,</if>
+			<if test="car_id != null and car_id != ''">car_id ,</if>
+			<if test="createdby != null and createdby != ''">createdby ,</if>
+			<if test="createdate != null ">createdate ,</if>
+			<if test="updatedate != null ">updatedate ,</if>
+			<if test="extend != null ">extend ,</if>
+			<if test="cameraCount != null ">cameracount ,</if>
+			<if test="screenCount != null ">screencount ,</if>
+			<if test="interphoneCount != null ">interphonecount ,</if>
+			<if test="warnerCount != null ">warnercount</if>
+		)
+		values (
+			<if test="car_no != null and car_no != ''"> #{car_no},</if>
+			<if test="device != null and device != ''"> #{device},</if>
+			<if test="device_type != null and device_type != ''"> #{device_type},</if>
+			<if test="video_device != null and video_device != ''"> #{video_device},</if>
+			<if test="video_sim != null and video_sim != ''"> #{video_sim},</if>
+			<if test="sim != null and sim != ''"> #{sim},</if>
+			<if test="connectway != null and connectway != ''"> #{connectway},</if>
+			<if test="status != null and status != ''"> #{status},</if>
+			<if test="car_id != null and car_id != ''"> #{car_id},</if>
+			<if test="createdby != null and createdby != ''"> #{createdby},</if>
+			<if test="createdate != null "> #{createdate},</if>
+			<if test="updatedate != null "> #{updatedate},</if>
+			<if test="extend != null "> #{extend}, </if>
+			<if test="cameraCount != null ">#{cameraCount} ,</if>
+			<if test="screenCount != null ">#{screenCount} ,</if>
+			<if test="interphoneCount != null ">#{interphoneCount} ,</if>
+			<if test="warnerCount != null ">#{warnerCount}</if>
+		)
+	</insert>
+	
+	<!-- ______________________________________________________________________________ update -->
+	<update id="update" parameterType="com.uoocent.car.entity.Device">
+		update yx_device 
+		<set>
+			<if test="car_no != null and car_no != ''">car_no = #{car_no},</if>
+			<if test="device != null and device != ''">device = #{device},</if>
+			<if test="device_type != null and device_type != ''">device_type = #{device_type},</if>
+			<if test="video_device != null and video_device != ''">video_device = #{video_device},</if>
+			<if test="video_sim != null and video_sim != ''">video_sim = #{video_sim},</if>
+			<if test="sim != null and sim != ''">sim = #{sim},</if>
+			<if test="connectway != null and connectway != ''">connectway = #{connectway},</if>
+			<if test="status != null and status != ''">status = #{status},</if>
+			<if test="car_id != null and car_id != ''">car_id = #{car_id},</if>
+			<if test="createdby != null and createdby != ''">createdby = #{createdby},</if>
+			<if test="createdate != null ">createdate = #{createdate},</if>
+			<if test="updatedate != null ">updatedate = #{updatedate},</if>
+			<if test="extend != null ">extend = #{extend}</if>
+		</set>
+		where status = 1
+		<if test="device != null and device != ''">and device = #{device} </if>
+		<if test="id != null">and id = #{id} </if>
+		<if test="car_id != null">and car_id = #{car_id}</if>
+	</update>	
+	
+	<!-- _____________________________________________________________________________ findByMap -->
+	<select id="findByMap" parameterType="map" resultMap="DeviceRM">
+		select <include refid="COLUMNS" /> from yx_device
+		where 1=1
+			<if test="id != null">and id = #{id}</if>
+			<if test="car_no != null">and car_no = #{car_no}</if>
+			<if test="device != null">and device = #{device}</if>
+			<if test="sim != null">and sim = #{sim}</if>
+			<if test="connectway != null">and connectway = #{connectway}</if>
+			<if test="status != null">and status = #{status}</if>
+			<if test="car_id != null">and car_id = #{car_id}</if>
+			<if test="createdby != null">and createdby = #{createdby}</if>
+			<if test="createdate != null">and createdate = #{createdate}</if>
+	</select>
+
+	<!-- _____________________________________________________________________________ findBy -->
+
+	<select id="findBy" parameterType="com.uoocent.car.entity.Device" resultMap="DeviceRM">
+		select <include refid="COLUMNS" /> from yx_device
+		where 1=1
+			<if test="id != null">and id = #{id}</if>
+			<if test="car_no != null">and car_no = #{car_no}</if>
+			<if test="device != null">and device = #{device}</if>
+			<if test="sim != null">and sim = #{sim}</if>
+			<if test="connectway != null">and connectway = #{connectway}</if>
+			<if test="status != null">and status = #{status}</if>
+			<if test="car_id != null">and car_id = #{car_id}</if>
+			<if test="createdby != null">and createdby = #{createdby}</if>
+			<if test="createdate != null">and createdate = #{createdate}</if>
+	</select>
+
+	<!-- _____________________________________________________________________________ findById -->
+
+	<select id="findById" parameterType="java.lang.Long" resultMap="DeviceRM">
+		select <include refid="COLUMNS" /> from yx_device where id = #{id} and  status='1'
+	</select>
+	
+		<!-- _____________________________________________________________________________ listByMap -->
+	<select id="listByMap" parameterType="map" resultMap="DeviceRM">
+		select <include refid="COLUMNS" /> from yx_device
+		where status='1'
+			<if test="id != null">and id = #{id}</if>
+			<if test="car_no != null">and car_no = #{car_no}</if>
+			<if test="device != null">and device = #{device}</if>
+			<if test="sim != null">and sim = #{sim}</if>
+			<if test="connectway != null">and connectway = #{connectway}</if>
+			<if test="status != null">and status = #{status}</if>
+			<if test="car_id != null">and car_id = #{car_id}</if>
+			<if test="createdby != null">and createdby = #{createdby}</if>
+			<if test="createdate != null">and createdate = #{createdate}</if>
+	</select>
+	
+	<select id="onlyValidation" parameterType="map" resultMap="DeviceRM">
+		select d.id,d.status,c.id as car_id,c.car_no 
+		from (select * 
+		      from yx_device 
+		      where 1=1
+			      <if test="device != null">and device = #{device}</if>
+			      <if test="status != null">and status = #{status}</if>
+		      ) as d
+		left join yx_car as c on d.car_id = c.id
+		where 1=1
+		<if test="status != null">and c.status = #{status}</if>
+	</select>
+</mapper>

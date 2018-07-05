@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uoocent.car.daoM.CarDao">
+	<resultMap type="com.uoocent.car.entity.Car" id="CarRM">
+		<id column="id" property="id" />
+		<result column="car_no" property="car_no" />
+		<result column="car_no_color" property="car_no_color"/>
+		<result column="self_num" property="self_num" />
+		<result column="brand" property="brand" />
+		<result column="type" property="type" />
+		<result column="fule_type" property="fule_type" />
+		<result column="tank_vol" property="tank_vol" />
+		<result column="tank_length" property="tank_length" />
+		<result column="tank_height" property="tank_height" />
+		<result column="tank_width" property="tank_width" />
+		<result column="driver_image_1" property="driver_image_1" />
+		<result column="driver_image_2" property="driver_image_2" />
+		<result column="vin" property="vin" />
+		<result column="mileage" property="mileage" />
+		<result column="texts" property="texts" />
+		<result column="obd" property="obd" />
+		<result column="org" property="org" />		
+		<result column="status" property="status" />
+		<result column="car_status" property="car_status" />
+		<result column="createdby" property="createdby" />
+		<result column="createtime" property="createtime" />
+		<result column="updateTime" property="updatetime" />
+		<result column="device" property="device" />
+	</resultMap>
+	<!-- _____________________________________________________________________________ 全部字段 -->
+	<sql id="COLUMNS">
+		id,car_no,car_no_color,self_num,brand,type,fule_type,tank_vol,tank_length,tank_height,tank_width,driver_image_1,driver_image_2,vin,mileage,texts,obd,org,status,car_status,createdby,createtime,updateTime
+	</sql>
+	
+	<!-- _____________________________________________________________________________ add -->
+	<insert id="add" parameterType="com.uoocent.car.entity.Car">
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+		insert into yx_car (
+			<if test="car_no != null and car_no != '' ">car_no ,</if>
+			<if test="car_no_color != null and car_no_color != '' ">car_no_color ,</if>
+			<if test="self_num != null and self_num != '' ">self_num ,</if>
+			<if test="brand != null and brand != '' ">brand ,</if>
+			<if test="type != null and type != '' ">type ,</if>
+			<if test="fule_type != null and fule_type != '' ">fule_type ,</if>
+			<if test="tank_vol != null and tank_vol != '' ">tank_vol ,</if>
+			<if test="tank_length != null and tank_length != '' ">tank_length ,</if>
+			<if test="tank_height != null and tank_height != '' ">tank_height ,</if>
+			<if test="tank_width != null and tank_width != '' ">tank_width ,</if>
+			<if test="driver_image_1 != null and driver_image_1 != '' ">driver_image_1 ,</if>
+			<if test="driver_image_2 != null and driver_image_2 != '' ">driver_image_2 ,</if>
+			<if test="vin != null and vin != '' ">vin ,</if>
+			<if test="mileage != null and mileage != '' ">mileage ,</if>
+			<if test="texts != null and texts != '' ">texts ,</if>
+			<if test="obd != null and obd != '' ">obd ,</if>
+			<if test="org != null and org != '' ">org ,</if>
+			<if test="status != null ">status ,</if>
+			<if test="car_status != null ">car_status ,</if>
+			<if test="createdby != null ">createdby ,</if>
+			<if test="updatetime != null ">updateTime ,</if>
+			<if test="createtime != null and createtime != '' ">createtime</if>
+		)
+		values (
+			<if test="car_no != null and car_no != '' "> #{car_no},</if>
+			<if test="car_no_color != null and car_no_color != '' "> #{car_no_color},</if>
+			<if test="self_num != null and self_num != '' "> #{self_num},</if>
+			<if test="brand != null and brand != '' "> #{brand},</if>
+			<if test="type != null and type != '' "> #{type},</if>
+			<if test="fule_type != null and fule_type != '' "> #{fule_type},</if>
+			<if test="tank_vol != null and tank_vol != '' "> #{tank_vol},</if>
+			<if test="tank_length != null and tank_length != '' "> #{tank_length},</if>
+			<if test="tank_height != null and tank_height != '' "> #{tank_height},</if>
+			<if test="tank_width != null and tank_width != '' "> #{tank_width},</if>
+			<if test="driver_image_1 != null and driver_image_1 != '' "> #{driver_image_1},</if>
+			<if test="driver_image_2 != null and driver_image_2 != '' "> #{driver_image_2},</if>
+			<if test="vin != null and vin != '' "> #{vin},</if>
+			<if test="mileage != null and mileage != '' "> #{mileage},</if>
+			<if test="texts != null and texts != '' "> #{texts},</if>
+			<if test="obd != null and obd != '' "> #{obd},</if>
+			<if test="org != null and org != '' "> #{org},</if>
+			<if test="status != null "> #{status},</if>
+			<if test="car_status != null "> #{car_status},</if>
+			<if test="createdby != null "> #{createdby},</if>
+			<if test="updatetime != null "> #{updatetime},</if>
+			<if test="createtime != null and createtime != '' "> #{createtime}</if>
+		)
+	</insert>
+	
+	<!-- ______________________________________________________________________________ update -->
+	<update id="update" parameterType="com.uoocent.car.entity.Car">
+		update yx_car 
+		<set>
+			<if test="car_no != null and car_no!=''">car_no = #{car_no},</if>
+			<if test="car_no_color != null and car_no_color != ''">car_no_color = #{car_no_color},</if>
+			<if test="self_num != null and self_num !=''">self_num = #{self_num},</if>
+			<if test="brand != null and brand !=''">brand = #{brand},</if>
+			<if test="type != null and type !=''">type = #{type},</if>
+			<if test="fule_type != null and fule_type !=''">fule_type = #{fule_type},</if>
+			<if test="tank_vol != null and tank_vol !=''">tank_vol = #{tank_vol},</if>
+			<if test="tank_length != null and tank_length !=''">tank_length = #{tank_length},</if>
+			<if test="tank_height != null and tank_height !=''">tank_height = #{tank_height},</if>
+			<if test="tank_width != null and tank_width !=''">tank_width = #{tank_width},</if>
+			<if test="driver_image_1 != null and driver_image_1 !=''">driver_image_1 = #{driver_image_1},</if>
+			<if test="driver_image_2 != null and driver_image_2 !=''">driver_image_2 = #{driver_image_2},</if>
+			<if test="vin != null and vin !=''">vin = #{vin},</if>
+            <if test="mileage != null and mileage!=''">mileage = #{mileage},</if>
+			<if test="texts != null and texts!=''">texts = #{texts},</if>            
+			<if test="obd != null and obd!=''">obd = #{obd},</if>            
+			<if test="org != null and org!=''">org = #{org},</if>            
+			<if test="status != null and status!=''">status = #{status},</if>
+			<if test="car_status != null and car_status!=''">car_status = #{car_status},</if>			
+			<if test="createdby != null and createdby != ''">createdby = #{createdby},</if>			
+			<if test="createtime != null and createtime != ''">createtime = #{createtime},</if>
+			<if test="updatetime != null and updatetime != ''">updateTime = #{updatetime}</if>
+		</set>
+		where id = #{id} and status = 1
+	</update>		
+	
+	<!-- _____________________________________________________________________________ findByMap -->
+	<select id="findByMap" parameterType="map" resultMap="CarRM">
+		select <include refid="COLUMNS" /> from yx_car
+		where 1=1
+			<if test="id != null">and id = #{id}</if>
+			<if test="car_no != null">and car_no = #{car_no}</if>
+			<if test="self_num != null">and self_num = #{self_num}</if>
+			<if test="type != null">and type = #{type}</if>
+			<if test="vin != null">and vin = #{vin}</if>
+			<if test="mileage != null">and mileage = #{mileage}</if>
+			<if test="texts != null">and texts = #{texts}</if>
+			<if test="obd != null">and obd = #{obd}</if>
+			<if test="org != null">and org = #{org}</if>
+			<if test="status != null">and status = #{status}</if>
+			<if test="car_status != null">and car_status = #{status}</if>
+			<if test="createdby != null">and createdby = #{createdby}</if>
+			<if test="createtime != null">and createtime = #{createtime}</if>
+	</select>
+
+	<!-- _____________________________________________________________________________ findBy -->
+
+	<select id="findBy" parameterType="com.uoocent.car.entity.Car" resultMap="CarRM">
+		select <include refid="COLUMNS" /> from yx_car
+		where 1=1
+			<if test="id != null">and id = #{id}</if>
+			<if test="car_no != null">and car_no = #{car_no}</if>
+			<if test="self_num != null">and self_num = #{self_num}</if>
+			<if test="type != null">and type = #{type}</if>
+			<if test="vin != null">and vin = #{vin}</if>
+			<if test="mileage != null">and mileage = #{mileage}</if>
+			<if test="texts != null">and texts = #{texts}</if>
+			<if test="obd != null">and obd = #{obd}</if>
+			<if test="org != null">and org = #{org}</if>
+			<if test="status != null">and status = #{status}</if>
+			<if test="car_status != null">and car_status = #{status}</if>
+			<if test="createdby != null">and createdby = #{createdby}</if>
+			<if test="createtime != null">and createtime = #{createtime}</if>
+	</select>
+
+	<!-- _____________________________________________________________________________ findById -->
+
+	<select id="findById" parameterType="java.lang.Long" resultMap="CarRM">
+		select <include refid="COLUMNS" /> from yx_car where id = #{id} and  status='1'
+	</select>
+	
+	<!-- _____________________________________________________________________________ 8.1.findByMap -->
+	<select id="listByMap" parameterType="map" resultMap="CarRM">
+		select <include refid="COLUMNS" /> from yx_car
+		where status='1'
+			<if test="id != null">and id = #{id}</if>
+			<if test="car_no != null">and car_no = #{car_no}</if>
+			<if test="self_num != null">and self_num = #{self_num}</if>
+			<if test="type != null">and type = #{type}</if>			
+			<if test="vin != null">and vin = #{vin}</if>
+			<if test="mileage != null">and mileage = #{mileage}</if>
+			<if test="texts != null">and texts = #{texts}</if>
+			<if test="obd != null">and obd = #{obd}</if>
+			<if test="org != null">and org = #{org}</if>
+			<if test="status != null">and status = #{status}</if>
+			<if test="car_status != null">and car_status = #{status}</if>
+			<if test="createdby != null">and createdby = #{createdby}</if>
+			<if test="createtime != null">and createtime = #{createtime}</if>
+	</select>
+	
+	<select id="listVehicle" parameterType="map" resultType="java.util.HashMap">
+	    select c.id as car_id,c.car_no as car_no,d.device as obdcode,d.sim as sim,c.self_num 
+	    from (select * from `yx_car`
+		      where 1=1
+		      <if test="obd != null">and obd = #{obd}</if>
+		      <if test="status != null">and status = #{status}</if>
+		      <if test="createdby != null">and createdby = #{createdby}</if>) as c
+		left join (select * from `yx_device` 
+		           where 1=1
+		           <if test="status != null">and status = #{status}</if>
+		           <if test="createdby != null">and createdby = #{createdby}</if>) as d on c.id = d.car_id
+		order by c.createtime desc
+		limit #{startIdx},#{limit}
+	</select>
+	
+	<select id="listVehicleCount" parameterType="map" resultType="integer">
+	    select COUNT(*) 
+	    from (select * from `yx_car`
+		      where 1=1
+		      <if test="obd != null">and obd = #{obd}</if>
+		      <if test="status != null">and status = #{status}</if>
+		      <if test="createdby != null">and createdby = #{createdby}</if>) as c
+		left join (select * from `yx_device` 
+		           where 1=1
+		           <if test="status != null">and `status` = #{status}</if>
+		           <if test="createdby != null">and createdby = #{createdby}</if>) as d on c.id = d.car_id
+	</select>
+	
+	<select id="onlyValidation" parameterType="map" resultMap="CarRM">
+		select c.id,c.car_no,c.obd,d.device,d.device_type  
+		from (select * 
+		      from yx_car 
+		      where 1=1
+			      <if test="car_no != null">and car_no = #{car_no}</if>
+			      <if test="status != null">and `status` = #{status}</if>
+			 ) as c
+		left join `yx_device` as d on c.id = d.car_id
+		where 1=1
+		<if test="status != null">and d.`status` = #{status}</if>
+	</select>
+	
+	<select id="getCarInfo" parameterType="map" resultType="java.util.HashMap">
+		select
+		   yd.car_id,
+		   yd.id as device_id,
+		   yc.car_no as vehicnum,
+		   yc.car_no_color,
+		   ydc.text as color_name,
+		   yc.self_num,
+		   yc.brand as car_brand,
+		   yc.type,
+		   ydt.text as type_name,
+		   yc.fule_type,
+		   ydf.text as fule_type_name,
+		   yc.tank_vol,
+		   yc.tank_length,
+		   yc.tank_height,
+		   yc.tank_width,
+		   yc.driver_image_1,
+		   yc.driver_image_2,
+		   yd.device as obdnum,
+		   yd.device_type,
+		   ydd.text as device_type_name,
+		   yd.video_device,
+		   yd.video_sim,
+		   yd.sim as simnum,
+		   yd.extend,
+		   yc.mileage as odometer,
+		   yd.connectway,
+		   yc.texts as remark,
+		   yc.org,
+		   yo.`name` as org_name,
+		   yc.vin
+		from yx_car yc 
+		left join yx_device yd on yd.car_id = yc.id
+		left join yx_org yo on yo.id = yc.org
+		left join yx_dictionary ydc on yc.car_no_color = ydc.`value` and ydc.parent_id = '50' and ydc.type = '2'
+		left join yx_dictionary ydt on yc.type = ydt.`value` and ydt.parent_id = '1' and ydt.type = '2'
+		left join yx_dictionary ydf on yc.fule_type = ydf.`value` and ydf.parent_id = '30' and ydf.type = '2'
+		left join yx_dictionary ydd on yd.device_type = ydd.`value` and ydd.parent_id = '70' and ydd.type = '2'
+		where yc.car_no = #{car_no}
+		<if test="car_status">and yc.`status` = #{car_status}</if>
+		<if test="device_status">and yd.`status` = #{device_status}</if>
+	</select>
+	<select id="getCarLocation" parameterType="map" resultType="java.util.HashMap">
+		select 
+			yc.car_no,
+			yd.device as obdnum,
+			ygc.direction,
+            ygc.car_speed,
+			ygc.latitude,
+			ygc.longitude,
+			DATE_FORMAT(ygc.senddate,'%Y-%m-%d %H:%i:%s') as senddate
+		from yx_device yd 
+		left join yx_car yc on yc.id = yd.car_id
+		left join yx_gps_current ygc on yd.device = ygc.device
+		where yd.device = #{device}
+		<if test="car_status">and yc.`status` = #{car_status}</if>
+		<if test="device_status">and yd.`status` = #{device_status}</if>
+	</select>
+</mapper>

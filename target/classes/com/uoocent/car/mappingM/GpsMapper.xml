@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uoocent.car.daoM.GpsDao">
+	<resultMap type="com.uoocent.car.entity.Gps" id="GpsRM">
+		<result column="device" property="device" />
+		<result column="senddate" property="senddate" />
+		<result column="alm_id" property="alm_id" />
+		<result column="alm_description" property="alm_description" />
+		<result column="latitude" property="latitude" />		
+		<result column="longitude" property="longitude" />
+		<result column="fuel_level" property="fuel_level" />
+        <result column="turn_state" property="turn_state" />
+	</resultMap>
+	<!-- _____________________________________________________________________________ 全部字段 -->
+	<sql id="COLUMNS">
+		device,senddate,alm_id,latitude,longitude
+	</sql>
+	
+	<!-- _____________________________________________________________________________ listByDevice -->
+	<select id="listByDevice" parameterType="java.lang.String" resultMap="GpsRM">
+		select
+			device,
+			senddate,
+			latitude,
+			longitude,
+			fuel_level,
+			turn_state
+		from `yx_gps_current`
+		where device = #{device}
+		order by createdate desc
+		limit 5
+	</select>
+</mapper>
